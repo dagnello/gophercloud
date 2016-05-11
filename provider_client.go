@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	
+	"github.com/davecgh/go-spew/spew"
 )
 
 // DefaultUserAgent is the default User-Agent string set in the request header.
@@ -149,6 +151,7 @@ func (client *ProviderClient) Request(method, url string, options RequestOpts) (
 
 	// Construct the http.Request.
 	req, err := http.NewRequest(method, url, body)
+	
 	if err != nil {
 		return nil, err
 	}
@@ -181,6 +184,7 @@ func (client *ProviderClient) Request(method, url string, options RequestOpts) (
 	req.Close = true
 	
 	// Issue the request.
+	spew.Dump(req)
 	resp, err := client.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -237,7 +241,7 @@ func (client *ProviderClient) Request(method, url string, options RequestOpts) (
 			return nil, err
 		}
 	}
-
+	// spew.Dump(resp)
 	return resp, nil
 }
 

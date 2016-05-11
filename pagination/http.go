@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/rackspace/gophercloud"
+	"github.com/davecgh/go-spew/spew"
+	"fmt"
 )
 
 // PageResult stores the HTTP response that returned the current page of results.
@@ -35,6 +37,8 @@ func PageResultFrom(resp *http.Response) (PageResult, error) {
 	} else {
 		parsedBody = rawBody
 	}
+	fmt.Println("parsedBody")
+	spew.Dump(parsedBody)
 
 	return PageResultFromParsed(resp, parsedBody), err
 }
@@ -42,13 +46,32 @@ func PageResultFrom(resp *http.Response) (PageResult, error) {
 // PageResultFromParsed constructs a PageResult from an HTTP response that has already had its
 // body parsed as JSON (and closed).
 func PageResultFromParsed(resp *http.Response, body interface{}) PageResult {
-	return PageResult{
+	// fmt.Println("resp")
+	// spew.Dump(resp)
+	// fmt.Println("body")
+	// spew.Dump(body)
+	pageResult := PageResult{
 		Result: gophercloud.Result{
 			Body:   body,
 			Header: resp.Header,
 		},
 		URL: *resp.Request.URL,
 	}
+	
+	fmt.Println("pageResult.Body")
+	spew.Dump(pageResult.Body)
+	fmt.Println("pageResult.Header")
+	spew.Dump(pageResult.Header)
+	
+	fmt.Println("pageResult.Result")
+	spew.Dump(pageResult.Result)
+	
+	fmt.Println("pageResult.URL")
+	spew.Dump(pageResult.URL)
+	
+	fmt.Println("pageResult")
+	spew.Dump(pageResult)
+	return pageResult
 }
 
 // Request performs an HTTP request and extracts the http.Response from the result.

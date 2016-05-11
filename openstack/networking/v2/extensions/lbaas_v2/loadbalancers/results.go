@@ -1,9 +1,11 @@
 package loadbalancers
 
 import (
+	"fmt"
 	"github.com/mitchellh/mapstructure"
 	"github.com/rackspace/gophercloud"
 	"github.com/rackspace/gophercloud/pagination"
+	"github.com/davecgh/go-spew/spew"
 )
 
 // SessionPersistence represents the session persistence feature of the load
@@ -106,11 +108,14 @@ func (p LoadbalancerPage) IsEmpty() (bool, error) {
 // a generic collection is mapped into a relevant slice.
 func ExtractLoadbalancers(page pagination.Page) ([]LoadBalancer, error) {
 	var resp struct {
-		VIPs []LoadBalancer `mapstructure:"loadbalancer" json:"loadbalancer"`
+		VIPs []LoadBalancer `mapstructure:"loadbalancers" json:"loadbalancers"`
 	}
-
+	fmt.Println("page.(LoadbalancerPage).Body")
+	spew.Dump(page.(LoadbalancerPage).Body)
 	err := mapstructure.Decode(page.(LoadbalancerPage).Body, &resp)
-
+	fmt.Println("resp")
+	spew.Dump(resp)
+	
 	return resp.VIPs, err
 }
 

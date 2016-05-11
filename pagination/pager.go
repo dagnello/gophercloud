@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/rackspace/gophercloud"
+	"github.com/davecgh/go-spew/spew"
 )
 
 var (
@@ -75,11 +76,24 @@ func (p Pager) fetchNextPage(url string) (Page, error) {
 	}
 
 	remembered, err := PageResultFrom(resp)
+	// fmt.Println("remembered.Result")
+	// spew.Dump(remembered.Result)
+	// fmt.Println("remembered")
+	// spew.Dump(remembered)
 	if err != nil {
 		return nil, err
 	}
+	
+	page := p.createPage(remembered)
+	
+	fmt.Println("page")
+	spew.Dump(page)
+	
+	fmt.Println("page.GetBody")
+	spew.Dump(page.GetBody())
+	
 
-	return p.createPage(remembered), nil
+	return page, nil
 }
 
 // EachPage iterates over each page returned by a Pager, yielding one at a time to a handler function.
@@ -91,11 +105,15 @@ func (p Pager) EachPage(handler func(Page) (bool, error)) error {
 	currentURL := p.initialURL
 	for {
 		currentPage, err := p.fetchNextPage(currentURL)
+		fmt.Println("currentPage.GetBody")
+		spew.Dump(currentPage.GetBody())
 		if err != nil {
 			return err
 		}
 
 		empty, err := currentPage.IsEmpty()
+		fmt.Println("currentPage.IsEmpty")
+		spew.Dump(currentPage.IsEmpty())
 		if err != nil {
 			return err
 		}
